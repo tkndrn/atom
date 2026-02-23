@@ -95,7 +95,7 @@ def get_all_possible_channels():
         ("bein-sports-2", "BEIN SPORTS 2"),
         ("bein-sports-3", "BEIN SPORTS 3"),
         ("bein-sports-4", "BEIN SPORTS 4"),
-        
+        ("bein-sports-5", "BEIN SPORTS 5"),
         # S SPORT
         ("s-sport", "S SPORT"),
         ("s-sport-2", "S SPORT 2"),
@@ -111,7 +111,7 @@ def get_all_possible_channels():
         ("trt1", "TRT 1"),
         
         # DİĞER
-        ("aspor", "ASPOR"),
+       
     ]
     
     for channel_id, name in tv_channels:
