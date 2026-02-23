@@ -19,10 +19,14 @@ https://white-sky-0cce.tipyoktip.workers.dev/https://corestream.ronaldovurdu.hel
 #EXTVLCOPT:http-referrer=https://www.atomsportv489.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.tipyoktip.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-5.m3u8
-#EXTINF:-1 tvg-id="bein-sports-max-1" tvg-name="BEIN SPORTS MAX 5" group-title="TV Kanalları",BEIN SPORTS MAX 5
+#EXTINF:-1 tvg-id="bein-sports-max-1" tvg-name="BEIN SPORTS MAX 1" group-title="TV Kanalları",BEIN SPORTS MAX 1
 #EXTVLCOPT:http-referrer=https://www.atomsportv489.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.tipyoktip.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-max-1.m3u8
+#EXTINF:-1 tvg-id="bein-sports-max-2" tvg-name="BEIN SPORTS MAX 2" group-title="TV Kanalları",BEIN SPORTS MAX 2
+#EXTVLCOPT:http-referrer=https://www.atomsportv489.top
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
+https://white-sky-0cce.tipyoktip.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-max-2.m3u8
 #EXTINF:-1 tvg-id="s-sport" tvg-name="S SPORT" group-title="TV Kanalları",S SPORT
 #EXTVLCOPT:http-referrer=https://www.atomsportv489.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
