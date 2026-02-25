@@ -104,14 +104,14 @@ def get_all_possible_channels():
         ("s-sport-2", "S SPORT 2"),
         
         # TİVİBU SPOR
-        ("tivibu-spor-1", "TİVİBU SPOR 1"),
-        ("tivibu-spor-2", "TİVİBU SPOR 2"),
-        ("tivibu-spor-3", "TİVİBU SPOR 3"),
+      # ("tivibu-spor-1", "TİVİBU SPOR 1"),
+      # ("tivibu-spor-2", "TİVİBU SPOR 2"),
+      # ("tivibu-spor-3", "TİVİBU SPOR 3"),
         
         # TRT
-        ("trt-spor", "TRT SPOR"),
-        ("trt-yildiz", "TRT YILDIZ"),
-        ("trt1", "TRT 1"),
+      # ("trt-spor", "TRT SPOR"),
+      # ("trt-yildiz", "TRT YILDIZ"),
+      # ("trt1", "TRT 1"),
         
         # DİĞER
        
