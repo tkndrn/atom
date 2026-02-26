@@ -137,8 +137,17 @@ def create_m3u(working_channels, base_domain):
 
         f.write('#EXTINF:-1 group-title="TABII",Tabii 3\n')
         f.write('https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master_1080p.m3u8\n')
+        
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 4\n')
+        f.write('https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8\n')
 
-    print(f"\n{GREEN}[✓] M3U dosyası oluşturuldu: {OUTPUT_FILE}{RESET}")
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 5\n')
+        f.write('https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8\n')
+
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 6\n')
+        f.write('https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8\n')
+        
+        print(f"\n{GREEN}[✓] M3U dosyası oluşturuldu: {OUTPUT_FILE}{RESET}")
 
 def main():
     print(f"{GREEN}AtomSporTV M3U Oluşturucu{RESET}")
