@@ -1,6 +1,5 @@
 import requests
 import re
-import time
 
 # AtomSporTV
 START_URL = "https://url24.link/AtomSporTV"
@@ -19,7 +18,6 @@ headers = {
 }
 
 def get_base_domain():
-    """Ana domain'i bul"""
     try:
         response = requests.get(START_URL, headers=headers, allow_redirects=False, timeout=10)
         
@@ -39,23 +37,18 @@ def get_base_domain():
         return "https://www.atomsportv480.top"
 
 def get_channel_m3u8(channel_id, base_domain):
-    """PHP mantığı ile m3u8 linkini al"""
     try:
-        # 1. matches?id= endpoint
         matches_url = f"{base_domain}/matches?id={channel_id}"
         response = requests.get(matches_url, headers=headers, timeout=10)
         html = response.text
         
-        # 2. fetch URL'sini bul
         fetch_match = re.search(r'fetch\("(.*?)"', html)
         if not fetch_match:
-            # Alternatif pattern
             fetch_match = re.search(r'fetch\(\s*["\'](.*?)["\']', html)
         
         if fetch_match:
             fetch_url = fetch_match.group(1).strip()
             
-            # 3. fetch URL'sine istek yap
             custom_headers = headers.copy()
             custom_headers['Origin'] = base_domain
             custom_headers['Referer'] = base_domain
@@ -66,31 +59,23 @@ def get_channel_m3u8(channel_id, base_domain):
             response2 = requests.get(fetch_url, headers=custom_headers, timeout=10)
             fetch_data = response2.text
             
-            # 4. m3u8 linkini bul
             m3u8_match = re.search(r'"deismackanal":"(.*?)"', fetch_data)
             if m3u8_match:
-                m3u8_url = m3u8_match.group(1).replace('\\', '')
-                return m3u8_url
+                return m3u8_match.group(1).replace('\\', '')
             
-            # Alternatif pattern
             m3u8_match = re.search(r'"(?:stream|url|source)":\s*"(.*?\.m3u8)"', fetch_data)
             if m3u8_match:
                 return m3u8_match.group(1).replace('\\', '')
         
         return None
         
-    except Exception as e:
+    except:
         return None
 
 def get_all_possible_channels():
-    """Sadece TV kanallarını oluştur"""
-    print("TV kanal ID'leri oluşturuluyor...")
-    
     channels = []
-    
-    # SADECE TV KANALLARI
+
     tv_channels = [
-        # BEIN SPORTS
         ("bein-sports-1", "BEIN SPORTS 1"),
         ("bein-sports-2", "BEIN SPORTS 2"),
         ("bein-sports-3", "BEIN SPORTS 3"),
@@ -98,23 +83,8 @@ def get_all_possible_channels():
         ("bein-sports-5", "BEIN SPORTS 5"),
         ("bein-sports-max-1", "BEIN SPORTS MAX 1"),
         ("bein-sports-max-2", "BEIN SPORTS MAX 2"),
-        
-        # S SPORT
         ("s-sport", "S SPORT"),
         ("s-sport-2", "S SPORT 2"),
-        
-        # TİVİBU SPOR
-      # ("tivibu-spor-1", "TİVİBU SPOR 1"),
-      # ("tivibu-spor-2", "TİVİBU SPOR 2"),
-      # ("tivibu-spor-3", "TİVİBU SPOR 3"),
-        
-        # TRT
-      # ("trt-spor", "TRT SPOR"),
-      # ("trt-yildiz", "TRT YILDIZ"),
-      # ("trt1", "TRT 1"),
-        
-        # DİĞER
-       
     ]
     
     for channel_id, name in tv_channels:
@@ -124,95 +94,65 @@ def get_all_possible_channels():
             'group': 'WEB SPOR'
         })
     
-    print(f"Toplam {len(channels)} TV kanal ID'si oluşturuldu")
     return channels
 
 def test_channels(channels, base_domain):
-    """Kanaları test et ve çalışanları bul"""
-    print(f"\n{len(channels)} kanal test ediliyor...")
-    
     working_channels = []
     
-    for i, channel in enumerate(channels):
-        channel_id = channel["id"]
-        channel_name = channel["name"]
-        group = channel["group"]
-        
-        print(f"{i+1:2d}. {channel_name}...", end=" ", flush=True)
-        
-        m3u8_url = get_channel_m3u8(channel_id, base_domain)
+    for channel in channels:
+        m3u8_url = get_channel_m3u8(channel["id"], base_domain)
         
         if m3u8_url:
-            print(f"{GREEN}✓{RESET}")
             channel['url'] = m3u8_url
             working_channels.append(channel)
+            print(f"{GREEN}✓ {channel['name']}{RESET}")
         else:
-            print("✗")
+            print(f"✗ {channel['name']}")
     
     return working_channels
 
 def create_m3u(working_channels, base_domain):
-    """M3U dosyası oluştur"""
-    print(f"\nM3U dosyası oluşturuluyor...")
-    
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
+        # Dinamik bulunan kanallar
         for channel in working_channels:
-            channel_id = channel["id"]
-            channel_name = channel["name"]
-            m3u8_url = channel["url"]
-            
-            # EXTINF satırı
-            f.write(f'#EXTINF:-1 tvg-id="{channel_id}" tvg-name="{channel_name}" group-title="TV Kanalları",{channel_name}\n')
-            
-            # VLC seçenekleri
+            f.write(f'#EXTINF:-1 tvg-id="{channel["id"]}" tvg-name="{channel["name"]}" group-title="TV Kanalları",{channel["name"]}\n')
             f.write(f'#EXTVLCOPT:http-referrer={base_domain}\n')
             f.write(f'#EXTVLCOPT:http-user-agent={headers["User-Agent"]}\n')
-            
-            # URL
-            f.write(m3u8_url + "\n")
-    
+            f.write(channel["url"] + "\n")
+
+        # ===============================
+        # SABİT TABII KANALLARI (EN SONA)
+        # ===============================
+
+        f.write('\n#EXTINF:-1 group-title="TABII",Tabii\n')
+        f.write('https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8\n')
+
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 1\n')
+        f.write('https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_1080p.m3u8\n')
+
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 2\n')
+        f.write('https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8\n')
+
+        f.write('#EXTINF:-1 group-title="TABII",Tabii 3\n')
+        f.write('https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master_1080p.m3u8\n')
+
     print(f"\n{GREEN}[✓] M3U dosyası oluşturuldu: {OUTPUT_FILE}{RESET}")
-    print(f"Toplam {len(working_channels)} çalışan kanal eklendi.")
 
 def main():
     print(f"{GREEN}AtomSporTV M3U Oluşturucu{RESET}")
-    print("=" * 60)
-    
-    # 1. Ana domain'i bul
-    print("\n1. Ana domain bulunuyor...")
+    print("=" * 50)
+
     base_domain = get_base_domain()
-    
-    # 2. TV kanallarını oluştur
-    print("\n2. TV kanal ID'leri oluşturuluyor...")
-    all_channels = get_all_possible_channels()
-    
-    # 3. Kanalları test et
-    print("\n3. Kanallar test ediliyor...")
-    working_channels = test_channels(all_channels, base_domain)
-    
+    channels = get_all_possible_channels()
+    working_channels = test_channels(channels, base_domain)
+
     if not working_channels:
-        print("\n❌ Hiç çalışan kanal bulunamadı!")
+        print("Çalışan kanal bulunamadı.")
         return
-    
-    # 4. M3U oluştur
-    print("\n4. M3U dosyası oluşturuluyor...")
+
     create_m3u(working_channels, base_domain)
-    
-    # 5. Sonuçları göster
-    print("\n" + "=" * 60)
-    print("ÇALIŞAN KANALLAR:")
-    
-    for channel in working_channels:
-        print(f"  ✓ {channel['name']}")
-    
-    # 6. GitHub komutları
-    print("\n" + "=" * 60)
-    print("GitHub komutları:")
-    print(f"  git add {OUTPUT_FILE}")
-    print('  git commit -m "AtomSporTV M3U güncellemesi"')
-    print("  git push")
 
 if __name__ == "__main__":
     main()
