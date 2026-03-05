@@ -1,10 +1,13 @@
 #EXTM3U
 
+#EXTINF:-1,Bien 1
+https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8
+
 #EXTINF:-1,Bien B1
 https://api.codetabs.com/v1/proxy/?quest=https://andro.226503.xyz/checklist/androstreamlivebiraz1.m3u8
 
-#EXTINF:-1,Bien 1
-https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8
+#EXTINF:-1,Bien Z1
+https://zeustv32342.info/b1/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="bein-sports-1" tvg-name="BEIN SPORTS 1" group-title="TV Kanalları",BEIN SPORTS 1
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
