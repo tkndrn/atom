@@ -1,10 +1,10 @@
 import requests
 import re
 
-# AtomSporTV
-START_URL = "https://url24.link/AtomSporTV"
+# -----------------------
+# Ayarlar
+# -----------------------
 OUTPUT_FILE = "atom.m3u"
-
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
@@ -17,64 +17,57 @@ headers = {
     'Referer': 'https://url24.link/'
 }
 
+START_URL = "https://url24.link/AtomSporTV"
+
+# -----------------------
+# 1️⃣ Base domain bulma
+# -----------------------
 def get_base_domain():
     try:
         response = requests.get(START_URL, headers=headers, allow_redirects=False, timeout=10)
-        
         if 'location' in response.headers:
-            location1 = response.headers['location']
-            response2 = requests.get(location1, headers=headers, allow_redirects=False, timeout=10)
-            
+            loc1 = response.headers['location']
+            response2 = requests.get(loc1, headers=headers, allow_redirects=False, timeout=10)
             if 'location' in response2.headers:
-                base_domain = response2.headers['location'].strip().rstrip('/')
-                print(f"Ana Domain: {base_domain}")
-                return base_domain
-        
+                return response2.headers['location'].strip().rstrip('/')
         return "https://www.atomsportv480.top"
-        
-    except Exception as e:
-        print(f"Domain hatası: {e}")
+    except:
         return "https://www.atomsportv480.top"
 
+# -----------------------
+# 2️⃣ Atom kanallarını çek
+# -----------------------
 def get_channel_m3u8(channel_id, base_domain):
     try:
         matches_url = f"{base_domain}/matches?id={channel_id}"
         response = requests.get(matches_url, headers=headers, timeout=10)
         html = response.text
         
-        fetch_match = re.search(r'fetch\("(.*?)"', html)
-        if not fetch_match:
-            fetch_match = re.search(r'fetch\(\s*["\'](.*?)["\']', html)
-        
+        fetch_match = re.search(r'fetch\(["\'](.*?)["\']', html)
         if fetch_match:
             fetch_url = fetch_match.group(1).strip()
-            
             custom_headers = headers.copy()
             custom_headers['Origin'] = base_domain
             custom_headers['Referer'] = base_domain
             
             if not fetch_url.endswith(channel_id):
-                fetch_url = fetch_url + channel_id
-            
+                fetch_url += channel_id
+                
             response2 = requests.get(fetch_url, headers=custom_headers, timeout=10)
-            fetch_data = response2.text
+            data = response2.text
             
-            m3u8_match = re.search(r'"deismackanal":"(.*?)"', fetch_data)
+            m3u8_match = re.search(r'"deismackanal":"(.*?)"', data)
             if m3u8_match:
-                return m3u8_match.group(1).replace('\\', '')
+                return m3u8_match.group(1).replace('\\','')
             
-            m3u8_match = re.search(r'"(?:stream|url|source)":\s*"(.*?\.m3u8)"', fetch_data)
+            m3u8_match = re.search(r'"(?:stream|url|source)":\s*"(.*?\.m3u8)"', data)
             if m3u8_match:
-                return m3u8_match.group(1).replace('\\', '')
-        
+                return m3u8_match.group(1).replace('\\','')
         return None
-        
     except:
         return None
 
 def get_all_possible_channels():
-    channels = []
-
     tv_channels = [
         ("bein-sports-1", "BEIN SPORTS 1"),
         ("bein-sports-2", "BEIN SPORTS 2"),
@@ -86,82 +79,72 @@ def get_all_possible_channels():
         ("s-sport", "S SPORT"),
         ("s-sport-2", "S SPORT 2"),
     ]
-    
-    for channel_id, name in tv_channels:
-        channels.append({
-            'id': channel_id,
-            'name': name,
-            'group': 'WEB SPOR'
-        })
-    
+    channels = []
+    for cid, name in tv_channels:
+        channels.append({'id': cid, 'name': name, 'group': 'WEB SPOR'})
     return channels
 
 def test_channels(channels, base_domain):
-    working_channels = []
-    
-    for channel in channels:
-        m3u8_url = get_channel_m3u8(channel["id"], base_domain)
-        
-        if m3u8_url:
-            channel['url'] = m3u8_url
-            working_channels.append(channel)
-            print(f"{GREEN}✓ {channel['name']}{RESET}")
+    working = []
+    for c in channels:
+        url = get_channel_m3u8(c["id"], base_domain)
+        if url:
+            c['url'] = url
+            working.append(c)
+            print(f"{GREEN}✓ {c['name']}{RESET}")
         else:
-            print(f"✗ {channel['name']}")
-    
-    return working_channels
+            print(f"✗ {c['name']}")
+    return working
 
-def create_m3u(working_channels, base_domain):
+# -----------------------
+# 3️⃣ M3U oluştur
+# -----------------------
+def create_m3u(base_domain, working_channels):
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("#EXTM3U\n")
+        f.write("#EXTM3U\n\n")
         
-        # Dinamik bulunan kanallar
-        for channel in working_channels:
-            f.write(f'#EXTINF:-1 tvg-id="{channel["id"]}" tvg-name="{channel["name"]}" group-title="TV Kanalları",{channel["name"]}\n')
+        # ---- Senin özel linklerin ----
+        custom_links = [
+            ("Bien B1", "https://api.codetabs.com/v1/proxy/?quest=https://andro.226503.xyz/checklist/androstreamlivebiraz1.m3u8"),
+            ("Bien 1", "https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8")
+        ]
+        
+        for name, url in custom_links:
+            f.write(f"#EXTINF:-1,{name}\n")
+            f.write(url + "\n\n")
+        
+        # ---- AtomSporTV kanalları ----
+        for c in working_channels:
+            f.write(f'#EXTINF:-1 tvg-id="{c["id"]}" tvg-name="{c["name"]}" group-title="TV Kanalları",{c["name"]}\n')
             f.write(f'#EXTVLCOPT:http-referrer={base_domain}\n')
             f.write(f'#EXTVLCOPT:http-user-agent={headers["User-Agent"]}\n')
-            f.write(channel["url"] + "\n")
-
-        # ===============================
-        # SABİT TABII KANALLARI (EN SONA)
-        # ===============================
-
-        f.write('\n#EXTINF:-1 group-title="TABII",Tabii\n')
-        f.write('https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8\n')
-
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 1\n')
-        f.write('https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_1080p.m3u8\n')
-
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 2\n')
-        f.write('https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8\n')
-
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 3\n')
-        f.write('https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master_1080p.m3u8\n')
+            f.write(c["url"] + "\n\n")
         
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 4\n')
-        f.write('https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8\n')
-
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 5\n')
-        f.write('https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8\n')
-
-        f.write('#EXTINF:-1 group-title="TABII",Tabii 6\n')
-        f.write('https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8\n')
+        # ---- Tabii kanalları ----
+        tabii = [
+            "https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8",
+            "https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_1080p.m3u8",
+            "https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8",
+            "https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master_1080p.m3u8",
+            "https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8",
+            "https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8",
+            "https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8",
+        ]
+        for i, url in enumerate(tabii):
+            f.write(f'#EXTINF:-1 group-title="TABII",Tabii {i}\n')
+            f.write(url + "\n\n")
         
-        print(f"\n{GREEN}[✓] M3U dosyası oluşturuldu: {OUTPUT_FILE}{RESET}")
+    print(f"\n{GREEN}[✓] M3U dosyası oluşturuldu: {OUTPUT_FILE}{RESET}")
 
+# -----------------------
+# Main
+# -----------------------
 def main():
-    print(f"{GREEN}AtomSporTV M3U Oluşturucu{RESET}")
-    print("=" * 50)
-
+    print(f"{GREEN}AtomSporTV + Özel Link + Tabii M3U Oluşturucu{RESET}")
     base_domain = get_base_domain()
     channels = get_all_possible_channels()
-    working_channels = test_channels(channels, base_domain)
-
-    if not working_channels:
-        print("Çalışan kanal bulunamadı.")
-        return
-
-    create_m3u(working_channels, base_domain)
+    working = test_channels(channels, base_domain)
+    create_m3u(base_domain, working)
 
 if __name__ == "__main__":
     main()
