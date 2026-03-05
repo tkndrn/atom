@@ -105,8 +105,10 @@ def create_m3u(base_domain, working_channels):
         
         # ---- Senin özel linklerin ----
         custom_links = [
+            ("Bien 1", "https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8"),
             ("Bien B1", "https://api.codetabs.com/v1/proxy/?quest=https://andro.226503.xyz/checklist/androstreamlivebiraz1.m3u8"),
-            ("Bien 1", "https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8")
+            ("Bien Z1", "https://zeustv32342.info/b1/tracks-v1a1/mono.ts.m3u8")
+        
         ]
         
         for name, url in custom_links:
