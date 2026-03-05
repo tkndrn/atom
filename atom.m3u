@@ -1,52 +1,74 @@
 #EXTM3U
+
+#EXTINF:-1,Bien B1
+https://api.codetabs.com/v1/proxy/?quest=https://andro.226503.xyz/checklist/androstreamlivebiraz1.m3u8
+
+#EXTINF:-1,Bien 1
+https://cdn-albert.mobiligtv.com/test2f4649e5/wVYKseQKxM/streams/bein-sports-1/playlist.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-1" tvg-name="BEIN SPORTS 1" group-title="TV Kanalları",BEIN SPORTS 1
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-11.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-2" tvg-name="BEIN SPORTS 2" group-title="TV Kanalları",BEIN SPORTS 2
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-2.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-3" tvg-name="BEIN SPORTS 3" group-title="TV Kanalları",BEIN SPORTS 3
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-3.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-4" tvg-name="BEIN SPORTS 4" group-title="TV Kanalları",BEIN SPORTS 4
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-4.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-5" tvg-name="BEIN SPORTS 5" group-title="TV Kanalları",BEIN SPORTS 5
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-5.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-max-1" tvg-name="BEIN SPORTS MAX 1" group-title="TV Kanalları",BEIN SPORTS MAX 1
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-max-1.m3u8
+
 #EXTINF:-1 tvg-id="bein-sports-max-2" tvg-name="BEIN SPORTS MAX 2" group-title="TV Kanalları",BEIN SPORTS MAX 2
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/bein-sports-max-2.m3u8
+
 #EXTINF:-1 tvg-id="s-sport" tvg-name="S SPORT" group-title="TV Kanalları",S SPORT
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/s-sport.m3u8
+
 #EXTINF:-1 tvg-id="s-sport-2" tvg-name="S SPORT 2" group-title="TV Kanalları",S SPORT 2
 #EXTVLCOPT:http-referrer=https://www.atomsportv490.top
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36
 https://white-sky-0cce.geminifast.workers.dev/https://corestream.ronaldovurdu.help//hls/s-sport-2.m3u8
 
-#EXTINF:-1 group-title="TABII",Tabii
+#EXTINF:-1 group-title="TABII",Tabii 0
 https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 1
 https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 2
 https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 3
 https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 4
 https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 5
 https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8
+
 #EXTINF:-1 group-title="TABII",Tabii 6
 https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8
+
