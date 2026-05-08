@@ -23,13 +23,18 @@ async def linki_sok_al():
             await browser.close()
 
         if found_m3u8:
-            # M3U içeriğini oluştur
             m3u_content = f'#EXTM3U\n#EXTINF:-1 group-title="SPOR",beIN SPORTS 1\n{found_m3u8[0]}'
-            with open("live.m3u", "w") as f:
+            # Dosyayı tam yetkiyle aç ve yaz
+            with open("live.m3u", "w", encoding="utf-8") as f:
                 f.write(m3u_content)
-            print("Link başarıyla live.m3u dosyasına yazıldı.")
+            
+            # Dosyanın oluşup oluşmadığını terminale yazdır (Debug için)
+            if os.path.exists("live.m3u"):
+                print("DOSYA BASARIYLA OLUSTURULDU: live.m3u")
+            else:
+                print("HATA: Dosya fiziksel olarak yazilamadi!")
         else:
-            print("Link yakalanamadı.")
+            print("Link bulunamadigi icin dosya olusturulmadi.")
 
 if __name__ == "__main__":
     asyncio.run(linki_sok_al())
