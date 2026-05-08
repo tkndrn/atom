@@ -26,8 +26,13 @@ jobs:
 
       - name: GitHub'a Geri Yükle
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add live.m3u
-          git commit -m "Yayin Linki Guncellendi" || exit 0
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Sadece dosya varsa işlem yap, yoksa hata verme
+          if [ -f live.m3u ]; then
+            git add live.m3u
+            git commit -m "Yayin Linki Guncellendi"
+            git push
+          else
+            echo "live.m3u bulunamadi, commit atlaniyor."
+          fi
