@@ -1,54 +1,40 @@
 import undetected_chromedriver as uc
 import time
-import re
-import os
-import shutil
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def freeiptv_enigma2_ready():
-    print("[*] Başlatılıyor...")
     options = uc.ChromeOptions()
-    options.add_argument("--headless=new")
+    # Headless modunu KESİNLİKLE KAPAT (Cloudflare'i tetikler)
+    # options.add_argument("--headless=new") 
     options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--window-size=1920,1080")
-
-    driver = None
+    
+    driver = uc.Chrome(options=options, version_main=148)
+    
     try:
-        driver = uc.Chrome(options=options, version_main=148)
         driver.get("https://freeiptv2023-d.ottc.xyz/index.php")
-        print("[*] Siteye girildi, 15 saniye bekleniyor...")
-        time.sleep(15)
+        print("[*] Site açıldı. Cloudflare testi bekleniyor...")
+        
+        # Cloudflare'in çözülmesi için bekle
+        # Butonun 'disabled' özelliğinin gitmesini 30 saniye boyunca bekle
+        wait = WebDriverWait(driver, 30)
+        btn = wait.until(lambda d: d.find_element(By.ID, "create-btn").is_enabled())
+        
+        print("[*] Buton aktifleşti! Tıklanıyor...")
+        driver.find_element(By.ID, "create-btn").click()
+        
+        time.sleep(10)
+        
+        # Verileri al
+        with open("son_sayfa.html", "w", encoding="utf-8") as f:
+            f.write(driver.page_source)
+        print("[+] İşlem tamam, sayfa kaydedildi.")
 
-        # Hata olsa bile içeriği alabilmek için
-        source = driver.page_source
-        
-        # Butona basma denemesi
-        try:
-            buttons = driver.find_elements(By.TAG_NAME, "button")
-            found = False
-            for btn in buttons:
-                if "Create" in btn.text:
-                    btn.click()
-                    print("[*] Butona tıklandı!")
-                    found = True
-                    time.sleep(10)
-                    source = driver.page_source
-                    break
-            if not found: print("[!] Buton bulunamadı, mevcut sayfa kaydediliyor.")
-        except Exception as e:
-            print(f"[!] Butona tıklarken hata: {e}")
-
-        # Kayıt işlemi
-        with open("son_sayfa.html", "w", encoding="utf-8") as f: f.write(source)
-        
-        # ... (Regex kısımlarını buraya ekle) ...
-        # (Regex'i kodun sonuna ekledim)
-        
     except Exception as e:
-        print(f"[!] Kritik hata: {e}")
+        print(f"[!] Hata: {e}")
     finally:
-        if driver: driver.quit()
+        driver.quit()
 
 if __name__ == "__main__":
     freeiptv_enigma2_ready()
