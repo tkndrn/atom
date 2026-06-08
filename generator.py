@@ -4,10 +4,6 @@ import time
 
 import undetected_chromedriver as uc
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
 
 def freeiptv_enigma2_ready():
 
@@ -40,44 +36,53 @@ def freeiptv_enigma2_ready():
         driver.get("https://freeiptv2023-d.ottc.xyz/index.php")
 
         print("[*] Baslik:", driver.title)
+        print("[*] URL:", driver.current_url)
 
         with open("ilk_sayfa.html", "w", encoding="utf-8") as f:
             f.write(driver.page_source)
 
-        print("[*] Buton bekleniyor...")
+        print("[+] ilk_sayfa.html kaydedildi")
 
-        wait = WebDriverWait(driver, 60)
+        time.sleep(5)
 
-        button = wait.until(
-            EC.element_to_be_clickable((By.ID, "create-btn"))
-        )
+        print("[*] Buton zorla aktif ediliyor...")
 
-        print("[+] Buton bulundu")
+        driver.execute_script("""
+            var btn = document.getElementById('create-btn');
+            if(btn){
+                btn.disabled = false;
+            }
+        """)
 
-        button.click()
+        time.sleep(2)
 
-        print("[*] Sonuc bekleniyor...")
-        time.sleep(15)
+        print("[*] Form submit ediliyor...")
+
+        driver.execute_script("""
+            document.querySelector('form').submit();
+        """)
+
+        time.sleep(10)
+
+        print("[*] Son durum kaydediliyor...")
 
         with open("son_sayfa.html", "w", encoding="utf-8") as f:
             f.write(driver.page_source)
 
+        with open("tum_html.txt", "w", encoding="utf-8") as f:
+            f.write(driver.page_source)
+
         print("[+] son_sayfa.html kaydedildi")
+        print("[*] Son URL:", driver.current_url)
+        print("[*] Son Baslik:", driver.title)
 
-        links = driver.find_elements(By.TAG_NAME, "a")
-
-        with open("linkler.txt", "w", encoding="utf-8") as f:
-            for link in links:
-                href = link.get_attribute("href")
-                if href:
-                    f.write(href + "\n")
-
-        print(f"[+] {len(links)} link bulundu")
+        print("\n========== HTML ILK 5000 KARAKTER ==========\n")
+        print(driver.page_source[:5000])
 
     except Exception as e:
 
         print("[!] HATA:")
-        print(e)
+        print(str(e))
 
         try:
             if driver:
