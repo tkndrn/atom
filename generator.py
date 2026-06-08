@@ -1,4 +1,7 @@
+import os
+import shutil
 import time
+
 import undetected_chromedriver as uc
 
 from selenium.webdriver.common.by import By
@@ -7,9 +10,14 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 def freeiptv_enigma2_ready():
+
+    # UC cache temizle
+    cache = os.path.expanduser("~/.local/share/undetected_chromedriver")
+    if os.path.exists(cache):
+        shutil.rmtree(cache, ignore_errors=True)
+
     options = uc.ChromeOptions()
 
-    # GitHub Actions / Linux için gerekli
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -22,6 +30,7 @@ def freeiptv_enigma2_ready():
         print("[*] Chrome baslatiliyor...")
 
         driver = uc.Chrome(
+            version_main=148,
             options=options,
             use_subprocess=True
         )
@@ -32,32 +41,29 @@ def freeiptv_enigma2_ready():
 
         print("[*] Baslik:", driver.title)
 
-        # İlk sayfanın kaydı
         with open("ilk_sayfa.html", "w", encoding="utf-8") as f:
             f.write(driver.page_source)
 
-        print("[*] Cloudflare / buton kontrolu bekleniyor...")
+        print("[*] Buton bekleniyor...")
 
         wait = WebDriverWait(driver, 60)
 
-        wait.until(
+        button = wait.until(
             EC.element_to_be_clickable((By.ID, "create-btn"))
         )
 
-        print("[+] Buton aktif!")
+        print("[+] Buton bulundu")
 
-        btn = driver.find_element(By.ID, "create-btn")
-        btn.click()
+        button.click()
 
-        print("[*] Tiklandi, sonuc bekleniyor...")
-        time.sleep(10)
+        print("[*] Sonuc bekleniyor...")
+        time.sleep(15)
 
         with open("son_sayfa.html", "w", encoding="utf-8") as f:
             f.write(driver.page_source)
 
         print("[+] son_sayfa.html kaydedildi")
 
-        # Eğer M3U linkleri oluşmuşsa görmek için
         links = driver.find_elements(By.TAG_NAME, "a")
 
         with open("linkler.txt", "w", encoding="utf-8") as f:
@@ -66,23 +72,24 @@ def freeiptv_enigma2_ready():
                 if href:
                     f.write(href + "\n")
 
-        print(f"[+] {len(links)} adet link bulundu")
+        print(f"[+] {len(links)} link bulundu")
 
     except Exception as e:
+
         print("[!] HATA:")
-        print(str(e))
+        print(e)
 
         try:
             if driver:
                 with open("hata_sayfasi.html", "w", encoding="utf-8") as f:
                     f.write(driver.page_source)
-                print("[*] hata_sayfasi.html kaydedildi")
         except:
             pass
 
         raise
 
     finally:
+
         try:
             if driver:
                 driver.quit()
