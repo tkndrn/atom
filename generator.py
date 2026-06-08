@@ -29,7 +29,7 @@ def freeiptv_enigma2_ready():
 
     driver = None
     try:
-        driver = uc.Chrome(options=options)
+        driver = uc.Chrome(options=options, version_main=148)
 
         # IP kontrolü (Proxy çalışıyor mu?)
         driver.get("https://api.ipify.org")
