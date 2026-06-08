@@ -19,7 +19,6 @@ jobs:
       - name: Çalıştır
         run: python generator.py
       - name: Dosyaları Kaydet
-        - name: Dosyaları Kaydet
         if: always()
         uses: actions/upload-artifact@v4
         with:
