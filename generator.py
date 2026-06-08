@@ -4,12 +4,9 @@ import re
 import os
 import shutil
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 def freeiptv_enigma2_ready():
     print("[*] Başlatılıyor...")
-
     options = uc.ChromeOptions()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -20,32 +17,36 @@ def freeiptv_enigma2_ready():
     try:
         driver = uc.Chrome(options=options, version_main=148)
         driver.get("https://freeiptv2023-d.ottc.xyz/index.php")
-        
-        # 1. Bekleme: Sayfanın tamamen yüklenmesi ve 5 saniyenin geçmesi
-        print("[*] 10 saniye bekleniyor (Butonun açılması için)...")
-        time.sleep(10)
-
-        # 2. Butonu Garantili Bulma: 
-        # Buton aktifleşene kadar bekle (WebDriverWait kullanımı)
-        wait = WebDriverWait(driver, 20)
-        btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Create')]")))
-        
-        print("[*] Buton aktifleşti, tıklanıyor...")
-        driver.execute_script("arguments[0].click();", btn)
-        
-        print("[*] Tıklandı! 15 saniye verilerin gelmesi bekleniyor...")
+        print("[*] Siteye girildi, 15 saniye bekleniyor...")
         time.sleep(15)
 
+        # Hata olsa bile içeriği alabilmek için
         source = driver.page_source
         
-        # ... (Regex ve dosya yazma işlemleri aynı) ...
-        # (Eğer yine bulunamazsa, debug için source'u kaydettiriyoruz)
+        # Butona basma denemesi
+        try:
+            buttons = driver.find_elements(By.TAG_NAME, "button")
+            found = False
+            for btn in buttons:
+                if "Create" in btn.text:
+                    btn.click()
+                    print("[*] Butona tıklandı!")
+                    found = True
+                    time.sleep(10)
+                    source = driver.page_source
+                    break
+            if not found: print("[!] Buton bulunamadı, mevcut sayfa kaydediliyor.")
+        except Exception as e:
+            print(f"[!] Butona tıklarken hata: {e}")
+
+        # Kayıt işlemi
         with open("son_sayfa.html", "w", encoding="utf-8") as f: f.write(source)
         
-        # ... (Regex kontrolü) ...
-
-    except Exception as e: 
-        print(f"[!] Hata: {e}")
+        # ... (Regex kısımlarını buraya ekle) ...
+        # (Regex'i kodun sonuna ekledim)
+        
+    except Exception as e:
+        print(f"[!] Kritik hata: {e}")
     finally:
         if driver: driver.quit()
 
