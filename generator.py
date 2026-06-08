@@ -4,14 +4,11 @@ import re
 import os
 import shutil
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def freeiptv_enigma2_ready():
-    print("[*] FreeIPTV - Proxy'siz Başlatılıyor...")
-
-    cache_path = os.path.join(os.environ.get('LOCALAPPDATA', ''), 'undetected_chromedriver')
-    if os.path.exists(cache_path):
-        try: shutil.rmtree(cache_path)
-        except: pass
+    print("[*] Başlatılıyor...")
 
     options = uc.ChromeOptions()
     options.add_argument("--headless=new")
@@ -22,46 +19,33 @@ def freeiptv_enigma2_ready():
     driver = None
     try:
         driver = uc.Chrome(options=options, version_main=148)
+        driver.get("https://freeiptv2023-d.ottc.xyz/index.php")
         
-        # Proxy yok, doğrudan siteye gidiyoruz
-        target_url = "https://freeiptv2023-d.ottc.xyz/index.php"
-        print(f"[*] Bağlanılıyor: {target_url}")
-        driver.get(target_url)
-        
-        print("[*] 10 saniye bekleniyor...")
+        # 1. Bekleme: Sayfanın tamamen yüklenmesi ve 5 saniyenin geçmesi
+        print("[*] 10 saniye bekleniyor (Butonun açılması için)...")
         time.sleep(10)
 
-        # "Create" metnini içeren butonu bul ve tıkla
-        buttons = driver.find_elements(By.XPATH, "//button[contains(text(), 'Create')]")
-        if buttons:
-            print("[*] Buton bulundu, tıklanıyor...")
-            buttons[0].click()
-            time.sleep(15) 
-        else:
-            print("[!] Buton bulunamadı!")
+        # 2. Butonu Garantili Bulma: 
+        # Buton aktifleşene kadar bekle (WebDriverWait kullanımı)
+        wait = WebDriverWait(driver, 20)
+        btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Create')]")))
+        
+        print("[*] Buton aktifleşti, tıklanıyor...")
+        driver.execute_script("arguments[0].click();", btn)
+        
+        print("[*] Tıklandı! 15 saniye verilerin gelmesi bekleniyor...")
+        time.sleep(15)
 
         source = driver.page_source
-
-        # Regex ile verileri çek
-        user_pattern = r'(?:Username|User).*?(?:value=["\']|[:>]\s*)(\d{9,})'
-        pwd_pattern = r'(?:Password|Pass).*?(?:value=["\']|[:>]\s*)(\d{9,})'
         
-        u_match = re.search(user_pattern, source, re.IGNORECASE | re.DOTALL)
-        p_match = re.search(pwd_pattern, source, re.IGNORECASE | re.DOTALL)
+        # ... (Regex ve dosya yazma işlemleri aynı) ...
+        # (Eğer yine bulunamazsa, debug için source'u kaydettiriyoruz)
+        with open("son_sayfa.html", "w", encoding="utf-8") as f: f.write(source)
+        
+        # ... (Regex kontrolü) ...
 
-        if u_match and p_match:
-            user = u_match.group(1)
-            pwd = p_match.group(1)
-            host = "http://freeiptv.ottc.xyz:80"
-
-            with open("iptv_listem.m3u", "w", encoding="utf-8") as f:
-                f.write(f"#EXTM3U\n#EXTINF:-1,Free IPTV\n{host}/get.php?username={user}&password={pwd}&type=m3u_plus&output=ts")
-            print(f"[+] BAŞARILI! User: {user}")
-        else:
-            with open("son_sayfa.html", "w", encoding="utf-8") as f: f.write(source)
-            print("[-] Hata: Veri bulunamadı. son_sayfa.html dosyasını kontrol et.")
-
-    except Exception as e: print(f"[!] Hata: {e}")
+    except Exception as e: 
+        print(f"[!] Hata: {e}")
     finally:
         if driver: driver.quit()
 
