@@ -22,23 +22,21 @@ def freeiptv_enigma2_ready():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--disable-blink-features=AutomationControlled")
-    
-    # Proxy ayarı
-    proxy = "https://ronaldo.magnitude.workers.dev/?url="
-    options.add_argument(f"--proxy-server={proxy}")
 
     driver = None
     try:
+        # Sürüm hatasını aşmak için version_main=148 (veya sisteminizdeki güncel versiyon)
         driver = uc.Chrome(options=options, version_main=148)
 
-        # IP kontrolü (Proxy çalışıyor mu?)
-        driver.get("https://api.ipify.org")
-        print(f"[*] Bağlanılan IP: {driver.find_element(By.TAG_NAME, 'body').text}")
+        # Proxy üzerinden siteye giriş
+        proxy_prefix = "https://ronaldo.magnitude.workers.dev/?url="
+        target_url = "https://freeiptv2023-d.ottc.xyz/index.php"
+        
+        print("[*] Hedef adrese bağlanılıyor...")
+        driver.get(proxy_prefix + target_url)
+        time.sleep(25) # Proxy yavaş çalışabilir, bekleme süresini artırdık
 
-        driver.get("https://freeiptv2023-d.ottc.xyz/index.php")
-        print("[*] Sayfa açıldı, bekleniyor...")
-        time.sleep(20)
-
+        # Butona tıklama
         driver.execute_script("""
             let btn = document.getElementById('create-btn');
             if (btn) {
@@ -47,29 +45,31 @@ def freeiptv_enigma2_ready():
             }
         """)
 
-        print("[*] Butona basıldı, 15 saniye bekleniyor...")
-        time.sleep(15)
+        print("[*] Butona basıldı, veriler bekleniyor...")
+        time.sleep(20)
 
         source = driver.page_source
 
+        # Regex ile verileri çekme
         username_match = re.search(r'Username.*?(\d{9,})', source, re.IGNORECASE | re.DOTALL)
         password_match = re.search(r'Password.*?(\d{9,})', source, re.IGNORECASE | re.DOTALL)
-        host_match = re.search(r'(http[s]?://[^\s"\'<>]+)', source)
+        # Host bilgisini daha esnek yakalamak için
+        host_match = re.search(r'(http[s]?://[a-zA-Z0-9.-]+\.[a-z]{2,}(?::\d+)?)', source)
 
         if username_match and password_match:
             user = username_match.group(1)
             pwd = password_match.group(1)
             host = host_match.group(1).rstrip('/') if host_match else "http://freeiptv.ottc.xyz:80"
 
-            print(f"✅ BAŞARILI! Kullanıcı: {user}")
+            print(f"✅ BAŞARILI! User: {user}")
 
             m3u_content = f"#EXTM3U\n#EXTINF:-1,Free IPTV\n{host}/get.php?username={user}&password={pwd}&type=m3u_plus&output=ts"
             
             with open("iptv_listem.m3u", "w", encoding="utf-8") as f:
                 f.write(m3u_content)
-            print("[+] M3U dosyası oluşturuldu: iptv_listem.m3u")
+            print("[+] M3U dosyası başarıyla oluşturuldu.")
         else:
-            print("[-] Credential bulunamadı, sayfa içeriği kaydediliyor.")
+            print("[-] Veriler bulunamadı! Sayfa içeriği kaydediliyor (debug için).")
             with open("son_sayfa.html", "w", encoding="utf-8") as f:
                 f.write(source)
 
