@@ -1,4 +1,4 @@
-name: IPTV Generator
+name: Generator
 
 on:
   schedule:
