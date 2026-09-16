@@ -1,10 +1,7 @@
 import asyncio
 from playwright.async_api import async_playwright
 
-async def m3u8_bul_ve_kaydet():
-    hedef_url = "https://beyazelma78.com/api/embed?u=UEsNIJ06uXbHrsROfQlACapvK5Da4ul3BxgoXvo9Kbc7uMHeMiqgdwbeGTR1j-TOl_YzU67mirvoPXvuA0wmvBFEo32ww1SZtVCCC42RFmj-bfw"
-    
-    print("[*] GitHub Actions üzerinde Playwright başlatılıyor...")
+async def tek_kanal_coz(hedef_url):
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(
@@ -13,7 +10,6 @@ async def m3u8_bul_ve_kaydet():
                 "Referer": "https://beyazelma78.com/"
             }
         )
-        
         page = await context.new_page()
         yakalanan_link = None
         
@@ -22,24 +18,37 @@ async def m3u8_bul_ve_kaydet():
             url = request.url
             if ".m3u8" in url.lower() or "format=.m3u8" in url.lower():
                 yakalanan_link = url
-                print(f"[+] Hedef Link Yakalandı: {url}")
 
         page.on("request", handle_request)
         
         try:
             await page.goto(hedef_url, timeout=30000)
-            await asyncio.sleep(7) # Shaka player ve isteklerin tetiklenmesi için bekleme
-            
-            if yakalanan_link:
-                with open("stream.txt", "w", encoding="utf-8") as f:
-                    f.write(yakalanan_link)
-                print("[+] Link 'stream.txt' dosyasına başarıyla kaydedildi.")
-            else:
-                print("[-] Link yakalanamadı!")
-        except Exception as e:
-            print(f"[-] Hata oluştu: {e}")
+            await asyncio.sleep(6)
+        except Exception:
+            pass
         finally:
             await browser.close()
+            
+        return yakalanan_link
+
+def extract_stream_without_logs():
+    kanal_urleri = [
+        "https://beyazelma78.com/api/embed?u=UEsNIJ06uXbHrsROfQlACapvK5Da4ul3BxgoXvo9Kbc7uMHeMiqgdwbeGTR1j-TOl_YzU67mirvoPXvuA0wmvBFEo32ww1SZtVCCC42RFmj-bfw",
+        "https://beyazelma78.com/api/embed?u=Pgooj3tsDLX31-TOP2HomNTqCovjmoIfDItvCFpV0c9t8W5sg0AWKB5aF2lsxzQAeuiZ-zdd_fnf96YdEtDM1_J24pfjMMS6BdpO9WjJoSTdJiE"
+    ]
+    
+    async def run():
+        tum_linkler = []
+        for url in kanal_urleri:
+            link = await tek_kanal_coz(url)
+            if link:
+                tum_linkler.append(link)
+        
+        if tum_linkler:
+            with open("stream.txt", "w", encoding="utf-8") as f:
+                f.write("\n".join(tum_linkler) + "\n")
+
+    asyncio.run(run())
 
 if __name__ == "__main__":
-    asyncio.run(m3u8_bul_ve_kaydet())
+    extract_stream_without_logs()
