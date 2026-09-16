@@ -23,8 +23,8 @@ jobs:
           pip install playwright
           playwright install chromium
 
-      - name: Extractor Scriptini Calistir
-        run: python extractor.py
+      - name: Beyaz.py Scriptini Calistir
+        run: python beyaz.py
 
       - name: Guncel linki repoya kaydet ve gonder
         run: |
