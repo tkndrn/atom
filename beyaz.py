@@ -35,8 +35,10 @@ def extract_stream_without_logs():
     kanal_urleri = [
         "https://beyazelma78.com/api/embed?u=F1IC6l1M7Cnc9lYpSxwKG6OfgWWfXb-OS2zs5zqKUVM-T6niImua1kRTWSKe-U_fzp9p6FQLVMS5I1y-6AehEXVmI5-Bi9zkRA",
         "https://beyazelma78.com/api/embed?u=UEsNIJ06uXbHrsROfQlACapvK5Da4ul3BxgoXvo9Kbc7uMHeMiqgdwbeGTR1j-TOl_YzU67mirvoPXvuA0wmvBFEo32ww1SZtVCCC42RFmj-bfw",
+        "https://beyazelma78.com/api/embed?u=ESZVVMH_3ug5WsyiArwCpQmLO7CtUUcWiaCOD4DKyuCYNTNcDaN5Tow8cqdyAESixufkHvcEewUPdNj5tUHDEJDELw",
         "https://beyazelma78.com/api/embed?u=Pgooj3tsDLX31-TOP2HomNTqCovjmoIfDItvCFpV0c9t8W5sg0AWKB5aF2lsxzQAeuiZ-zdd_fnf96YdEtDM1_J24pfjMMS6BdpO9WjJoSTdJiE"
     ]
+    
     
     async def run():
         tum_linkler = []
